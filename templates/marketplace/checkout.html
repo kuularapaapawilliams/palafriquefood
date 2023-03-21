@@ -1,0 +1,203 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<!-- Main Section Start -->
+<div class="main-section pt-5">
+    <div class="page-section">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="tabs-holder horizontal">
+                        <ul class="stickynav-tabs nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#home"><i class="icon icon-room_service text-danger"></i>Billing Address</a></li>
+                            
+                        </ul>
+                        <div class="tab-content">
+                            <div id="home" class="tab-pane in active">
+                                <div class="menu-itam-holder">                               
+                                 
+                                    <div id="menu-item-list-6272" class="menu-itam-list">
+                                        <form action="{% url 'place_order' %}" method="POST">
+                                            {% csrf_token %}
+                                            <div class="row">
+                                                <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                    First Name: {{ form.first_name}}
+                                                </div>
+                                                <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                    Last Name: {{ form.last_name}}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                    Phone Number: {{ form.phone}}
+                                                </div>
+                                                <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                    Email Address: {{ form.email}}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-12 col-sm-12 col-lg-12">
+                                                    Address: {{ form.address}}
+                                                </div>    
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                    Country: {{ form.country}}
+                                                </div>
+                                                <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                    State: {{ form.state}}
+                                                </div>
+                                            </div><div class="row">
+                                                <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                    City: {{ form.city}}
+                                                </div>
+                                                <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                    Postal Code: {{ form.pin_code}}
+                                                </div>
+                                            </div>
+                                         
+                                       
+                                    </div>
+                                  
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Your order section -->
+                 
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div class="tabs-holder horizontal">
+                        <ul class="stickynav-tabs nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#home"><i class="fa fa-shopping-cart text-danger"></i>Your Order</a></li>         
+                        </ul>
+                        <div class="tab-content">
+                            <div id="home" class="tab-pane in active">
+                                <div class="menu-itam-holder">
+                                    <div id="menu-item-list-6272" class="menu-itam-list">
+                                        <ul>                                          
+                                            {% for item in cart_items %}
+                                            <li id="cart-item-{{item.id}}">
+                                                <div class="image-holder"> <a href="#"><img src="{{ item.fooditem.image.url }}" alt=""></a></div>
+                                                <div class="text-holder">
+                                                    <h6>{{ item.fooditem }}</h6>
+                                                    <span>{{ item.fooditem.description }}</span>
+                                                    <a href="{% url 'vendor_detail' item.fooditem.vendor.vendor_slug %}" class="badge badge-info">{{ item.fooditem.vendor }}</a>
+                                                </div>
+                                                
+                                                <div class="price-holder">
+                                                    <span class="text-danger" style="margin-right: 20px;">{{ item.quantity }} QTY</span>
+
+                                                    <span class="price">GH¢ {{ item.fooditem.price }}</span>
+                                                                  
+                                                </div>
+                                            </li>
+                                           {% endfor %}                                           
+                                        </ul>
+                                       
+                                    </div>
+                                    <div>
+                                        <ul>
+                                            <li style="list-style-type: none;">
+                                                Subtotal
+                                                <span class="price float-right">
+                                                    <span class="currency">GH¢</span>
+                                                    <span id="subtotal">{{ subtotal }}</span>
+                                                </span>
+                                            </li>
+                                            {% for key, value in tax_dict.items %}
+                                                {% for i, j in value.items %}
+                                                <li style="list-style-type: none;">
+                                                    {{ key }}  
+                                                    <!-- <small>({{ i }}%)</small> You can uncheck to show percentage-->
+                                                    <span class="price float-right">
+                                                        <span class="currency">GH¢</span>
+                                                        <span id="tax-{{ key }}">{{ j }}</span>
+                                                    </span>
+                                                </li>
+                                                {% endfor %}
+                                            {% endfor %}
+                                            <li style="list-style-type: none; font-weight: 600;">
+                                                Total
+                                                <span class="price float-right">
+                                                    <span class="currency">GH¢</span>
+                                                    <span id="total">{{ grand_total }}</span>
+                                                </span>
+                                            </li>
+                                              <br>
+                                            <!-- Select Payment method -->
+                                            <h5>SELECT PAYMENT METHOD</h5>
+                                            <div class="payment-method">
+                                                <label>
+                                                    <input type="radio" name="payment_method" value="PAY CASH">
+                                                    <img src="{% static 'images/pay-on-delivery.png' %}" alt="PAY CASH" width="100" height="">
+                                                </label>
+                                                &emsp;
+                                                <label>
+                                                    <input type="radio" name="payment_method" value="MTN">
+                                                    <img src="{% static 'images/mtn.png' %}" alt="MTN" width="80" height="">
+                                                </label>
+                                                &emsp;
+                                                <label>
+                                                    <input type="radio" name="payment_method" value="Vodafone">
+                                                    <img src="{% static 'images/voda.png' %}" alt="VODAFONE" width="160" height="130">
+                                                </label>
+                                                &emsp;
+                                                <label>
+                                                    <input type="radio" name="payment_method" value="AirtelTigo">
+                                                    <img src="{% static 'images/airtel.png' %}" alt="AIRTEL" width="100" height="70">
+                                                </label>
+                                                &emsp;
+                                                <label>
+                                                    <input type="radio" name="payment_method" value="VISA">
+                                                    <img src="{% static 'images/visa.png' %}" alt="Visa" width="100" height="40">
+                                                </label>
+                                                &emsp;
+                                                <label>
+                                                    <input type="radio" name="payment_method" value="PayPal">
+                                                    <img src="{% static 'images/PayPal.png' %}" alt="PayPal" width="100">
+                                                </label>
+                                            </div>
+                                            <span class="text-danger" id="payment-method-error"></span>
+                                            <!-- Payment Method Ends -->
+ 
+                                            <button onclick="return payMethodConfirm();" type="submit" class="btn btn-info float-right w-100 p-2 mt-3">Place Order</button>
+                                            <a href="{% url 'cart' %}" class="btn btn-success w-100 p-2 mt-3">Back To Cart</a>
+                                           
+                                        </ul> 
+                                    </form>
+                                    </div>                                     
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function payMethodConfirm(){
+        var payMethod = $("input[name='payment_method']:checked").val()
+        if(!payMethod){
+            $('#payment-method-error').html("Please Select Payment Method!")
+            return false;
+        }else{
+            var conf = confirm('You have selected '+payMethod+' as your preferred payment method.\nclick "OK" to continue.')
+            if(conf == true){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+    $('input[name=payment_method]').on('change', function(){
+        $('#payment-method-error').html("");
+    })
+</script>
+
+{% endblock %}

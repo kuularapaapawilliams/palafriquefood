@@ -1,0 +1,12 @@
+{% autoescape off %}
+
+Hi {{user.first_name}},
+
+{% if is_approved %}
+Congratulations! Your Restaurant has been approved by Pal Afrique Food Vendor Marketplace. --palafriquefood
+
+{% else %}
+We're sorry! You are not eligible to sell on our food vendor website. For more details, please contact support@palafriquefood.com. --palafriquefood
+{% endif %}
+
+{% endautoescape %}
